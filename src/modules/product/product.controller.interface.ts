@@ -6,6 +6,5 @@ export interface IProductController {
 	deleteProduct: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 	updateProduct: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 	addProducts: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-
-	// findProducts: (req: Request, res: Response, next: NextFunction) => void;
+	findProductList: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }

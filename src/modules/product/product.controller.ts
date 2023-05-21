@@ -1,20 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
-import { BaseController } from '../common/base.controller';
+import { BaseController } from '../../common/base.controller';
 import { IProductController } from './product.controller.interface';
-import { ILogger } from '../logger/logger.interface';
-import { TYPES } from '../types';
+import { ILogger } from '../../logger/logger.interface';
+import { TYPES } from '../../types';
 import { inject, injectable } from 'inversify';
-import { ValidateMiddleware } from '../common/validate.middleware';
+import { ValidateMiddleware } from '../../common/validate.middleware';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
 import { Product } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AddProductDto } from './dto/add-product.dto';
-import { AuthGuard } from '../common/auth.guard';
+import { AuthGuard } from '../../common/auth.guard';
 import { UserService } from '../users/users.service';
-import { RoleGuard } from '../common/role.guard';
-import { USER_ROLE } from '../../types/user-role';
-import { HTTPError } from '../errors/http-error.class';
+import { RoleGuard } from '../../common/role.guard';
+import { USER_ROLE } from '../../../types/user-role';
+import { HTTPError } from '../../errors/http-error.class';
 import { FindProductDto } from './dto/find-product.dto';
 
 @injectable()

@@ -16,8 +16,4 @@ export class ProductEntity {
 	get count(): number {
 		return this._count;
 	}
-
-	// public setCount(): void {
-	// 	this._count = this.count - 1;
-	// }
 }

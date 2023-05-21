@@ -6,10 +6,10 @@ import { TYPES } from './types';
 import { json } from 'body-parser';
 import { IConfigService } from './config/config.service.interface';
 import { IExeptionFilter } from './errors/exeption.filter.interface';
-import { UserController } from './users/users.controller';
+import { UserController } from './modules/users/users.controller';
 import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
-import { ProductController } from './product/product.controller';
+import { ProductController } from './modules/product/product.controller';
 
 @injectable()
 export class App {

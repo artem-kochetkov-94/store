@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
-import { PrismaService } from '../database/prisma.service';
-import { TYPES } from '../types';
+import { PrismaService } from '../../database/prisma.service';
+import { TYPES } from '../../types';
 import { ProductEntity } from './product.entity';
 import { IProductRepository } from './product.repository.interface';
 import { Product } from '@prisma/client';

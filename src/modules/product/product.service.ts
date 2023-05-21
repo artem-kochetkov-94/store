@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { TYPES } from '../types';
+import { TYPES } from '../../types';
 import { IProductService } from './product.service.interface';
 import { Product } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';

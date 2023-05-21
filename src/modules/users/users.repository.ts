@@ -1,11 +1,11 @@
 import { User } from '.prisma/client';
 import { inject, injectable } from 'inversify';
-import { PrismaService } from '../database/prisma.service';
-import { TYPES } from '../types';
+import { PrismaService } from '../../database/prisma.service';
+import { TYPES } from '../../types';
 import { UserEntity } from './user.entity';
 import { IUsersRepository } from './users.repository.interface';
 import { Role } from '@prisma/client';
-import { USER_ROLE } from '../../types/user-role';
+import { USER_ROLE } from '../../../types/user-role';
 import { SetUserPasswordDto } from './dto/set-user-password.dto';
 
 @injectable()
