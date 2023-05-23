@@ -13,10 +13,14 @@
 		"test:e2e": "jest --config jest.e2e.config.ts --coverage",
 		"generate": "prisma generate",
 		"lint:fix": "eslint ./src/** --fix",
-		"build": "tsc"
+		"build": "tsc",
+		"prisma:reset": "npx prisma db push --force-reset && npx prisma db seed"
 	},
 	"author": "Anton Larichev",
 	"license": "ISC",
+	"prisma": {
+		"seed": "ts-node --transpile-only prisma/seed.ts"
+	},
 	"dependencies": {
 		"@prisma/client": "^4.6.1",
 		"bcryptjs": "^2.4.3",
