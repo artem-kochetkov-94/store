@@ -24,10 +24,11 @@ export class UserService implements IUserService {
 	}
 
 	async createUser({ email, name, password, roleName }: UserCreateDto): Promise<User | null> {
-		const newUser = new UserEntity(email, name, roleName);
+		const newUser = new UserEntity(email, name);
 		const salt = this.configService.get('SALT');
 
 		await newUser.setPassword(password, Number(salt));
+		newUser.setRoleName(roleName);
 
 		const existedUser = await this.usersRepository.findByEmail(email);
 

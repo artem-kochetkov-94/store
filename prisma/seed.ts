@@ -11,15 +11,15 @@ const prisma = new PrismaClient();
 async function getUser(): Promise<UserCreateDto> {
 	const configService = new ConfigService(new LoggerService());
 	const salt = configService.get('SALT');
-	const user = new UserEntity('user@mail.ru', 'user', USER_ROLE.ADMIN);
+	const user = new UserEntity('user@mail.ru', 'user');
 	await user.setPassword('user', Number(salt));
+	user.setRoleName(USER_ROLE.ADMIN);
 
 	return {
 		email: user.email,
 		password: user.password,
 		name: user.name,
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		roleName: user.roleName!,
+		roleName: user.roleName,
 	};
 }
 

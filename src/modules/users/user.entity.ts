@@ -3,12 +3,9 @@ import { USER_ROLE } from '../../../types/user-role';
 
 export class UserEntity {
 	private _password: string;
+	private _roleName: USER_ROLE;
 
-	constructor(
-		private readonly _email: string,
-		private readonly _name: string,
-		private readonly _roleName?: USER_ROLE,
-	) {}
+	constructor(private readonly _email: string, private readonly _name: string) {}
 
 	get email(): string {
 		return this._email;
@@ -22,8 +19,12 @@ export class UserEntity {
 		return this._password;
 	}
 
-	get roleName(): USER_ROLE | void {
+	get roleName(): USER_ROLE {
 		return this._roleName;
+	}
+
+	public setRoleName(roleName: USER_ROLE): void {
+		this._roleName = roleName;
 	}
 
 	public async setPassword(pass: string, salt: number): Promise<void> {
