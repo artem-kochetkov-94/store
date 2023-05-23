@@ -65,23 +65,49 @@ describe('Users e2e', () => {
 		expect(res.statusCode).toBe(422);
 	});
 
-	// it('Create user - success', async () => {
-	// 	const login = await request(application.app)
-	// 		.post('/users/login')
-	// 		.send({ email: 'user@mail.ru', password: 'user' });
-	// 	const res = await request(application.app)
-	// 		.post('/users/create-user')
-	// 		.set('Authorization', `Bearer ${login.body.jwt}`)
-	// 		.send({
-	// 			email: 'user-new@mail.ru',
-	// 			password: 'user',
-	// 			name: 'user',
-	// 			roleName: USER_ROLE.STOCK_MANAGER,
-	// 		});
-	// 	expect(res.statusCode).toBe(200);
-	// });
+	it('Create user - success', async () => {
+		const login = await request(application.app)
+			.post('/users/login')
+			.send({ email: 'user@mail.ru', password: 'user' });
+		const res = await request(application.app)
+			.post('/users/create-user')
+			.set('Authorization', `Bearer ${login.body.jwt}`)
+			.send({
+				email: 'user-new@mail.ru',
+				password: 'user',
+				name: 'user',
+				roleName: USER_ROLE.STOCK_MANAGER,
+			});
+		expect(res.statusCode).toBe(200);
+	});
 
-	it('Delete user password', async () => {
+	it('Delete user password without access - failed', async () => {
+		const login = await request(application.app)
+			.post('/users/login')
+			.send({ email: 'user-new@mail.ru', password: 'user' });
+		const res = await request(application.app)
+			.post('/users/delete-user-password')
+			.set('Authorization', `Bearer ${login.body.jwt}`)
+			.send({
+				id: 2,
+			});
+		expect(res.statusCode).toBe(403);
+	});
+
+	it('Delete own user password - failed', async () => {
+		const login = await request(application.app)
+			.post('/users/login')
+			.send({ email: 'user@mail.ru', password: 'user' });
+		const res = await request(application.app)
+			.post('/users/delete-user-password')
+			.set('Authorization', `Bearer ${login.body.jwt}`)
+			.send({
+				id: 1,
+			});
+		expect(res.statusCode).toBe(400);
+	});
+
+	it('Delete own user password - success', async () => {
 		const login = await request(application.app)
 			.post('/users/login')
 			.send({ email: 'user@mail.ru', password: 'user' });

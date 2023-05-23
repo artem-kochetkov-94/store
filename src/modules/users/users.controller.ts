@@ -102,7 +102,7 @@ export class UserController extends BaseController implements IUserController {
 		this.ok(res, { email: result.email, id: result.id });
 	}
 
-	// TODO: предзаполнить ролевые данные и сделать проверку на ввод
+	// TODO: валидация роли
 	async createUser(
 		{ body }: Request<{}, {}, UserCreateDto>,
 		res: Response,

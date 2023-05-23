@@ -1,4 +1,5 @@
 import { compare, hash } from 'bcryptjs';
+import { USER_ROLE } from '../../../types/user-role';
 
 export class UserEntity {
 	private _password: string;
@@ -6,7 +7,7 @@ export class UserEntity {
 	constructor(
 		private readonly _email: string,
 		private readonly _name: string,
-		private readonly _roleName?: string,
+		private readonly _roleName?: USER_ROLE,
 	) {}
 
 	get email(): string {
@@ -21,7 +22,7 @@ export class UserEntity {
 		return this._password;
 	}
 
-	get roleName(): string | void {
+	get roleName(): USER_ROLE | void {
 		return this._roleName;
 	}
 

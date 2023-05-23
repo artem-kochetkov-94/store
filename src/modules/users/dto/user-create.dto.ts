@@ -1,4 +1,5 @@
 import { IsEmail, IsString } from 'class-validator';
+import { USER_ROLE } from '../../../../types/user-role';
 
 export class UserCreateDto {
 	@IsEmail({}, { message: 'Неверно указан email' })
@@ -11,5 +12,5 @@ export class UserCreateDto {
 	name: string;
 
 	@IsString({ message: 'Не задана роль' })
-	roleName: string;
+	roleName: USER_ROLE;
 }

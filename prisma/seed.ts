@@ -1,17 +1,27 @@
 import { PrismaClient } from '@prisma/client';
 import { UserCreateDto } from '../src/modules/users/dto/user-create.dto';
 import { USER_ROLE } from '../types/user-role';
+import { UserEntity } from '../src/modules/users/user.entity';
+import { ConfigService } from '../src/config/config.service';
+import { LoggerService } from '../src/logger/logger.service';
+import 'reflect-metadata';
 
 const prisma = new PrismaClient();
 
-export const users = [
-	{
-		email: 'user@mail.ru',
-		password: 'user',
-		name: 'user',
-		roleName: USER_ROLE.ADMIN,
-	},
-];
+async function getUser(): Promise<UserCreateDto> {
+	const configService = new ConfigService(new LoggerService());
+	const salt = configService.get('SALT');
+	const user = new UserEntity('user@mail.ru', 'user', USER_ROLE.ADMIN);
+	await user.setPassword('user', Number(salt));
+
+	return {
+		email: user.email,
+		password: user.password,
+		name: user.name,
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		roleName: user.roleName!,
+	};
+}
 
 export const roles = [
 	{
@@ -35,26 +45,26 @@ async function main(): Promise<void> {
 		});
 	}
 
-	for (const { email, password, name, roleName } of users) {
-		await prisma.user.create({
-			data: {
-				email,
-				password,
-				name,
-				roles: {
-					create: [
-						{
-							role: {
-								create: {
-									name: roleName || USER_ROLE.USER,
-								},
+	const { email, password, name, roleName } = await getUser();
+
+	await prisma.user.create({
+		data: {
+			email,
+			password,
+			name,
+			roles: {
+				create: [
+					{
+						role: {
+							create: {
+								name: roleName || USER_ROLE.USER,
 							},
 						},
-					],
-				},
+					},
+				],
 			},
-		});
-	}
+		},
+	});
 }
 
 main()
