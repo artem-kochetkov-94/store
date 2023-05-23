@@ -3,3 +3,5 @@ TODO:
 2. Swagger
 3. Тесты
 4. Roles => Enum?
+5. TODO:
+6. Тесты гавно

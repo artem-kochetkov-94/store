@@ -67,7 +67,7 @@ export class UserService implements IUserService {
 	async setUserPassword(body: SetUserPasswordDto): Promise<User | null> {
 		const existedUser = await this.usersRepository.findById(body.id);
 
-		if (!existedUser || body.id) {
+		if (!existedUser) {
 			return null;
 		}
 
@@ -77,7 +77,7 @@ export class UserService implements IUserService {
 		await newUser.setPassword(body.password, Number(salt));
 
 		return this.usersRepository.setUserPassword({
-			...body,
+			id: body.id,
 			password: newUser.password,
 		});
 	}
