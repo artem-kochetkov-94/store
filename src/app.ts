@@ -10,6 +10,7 @@ import { UserController } from './modules/users/users.controller';
 import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
 import { ProductController } from './modules/product/product.controller';
+import { swaggerDocs } from './swagger';
 
 @injectable()
 export class App {
@@ -51,6 +52,7 @@ export class App {
 		await this.prismaService.connect();
 		this.server = this.app.listen(this.port);
 		this.logger.log(`Сервер запущен на http://localhost:${this.port}`);
+		swaggerDocs(this.app, this.port);
 	}
 
 	public close(): void {

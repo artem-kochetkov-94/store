@@ -47,9 +47,7 @@ export class ProductService implements IProductService {
 
 		return this.productRepository.updateProduct({
 			...body,
-			data: {
-				count: existedProduct.count + body.data.count,
-			},
+			count: existedProduct.count + body.count,
 		});
 	}
 

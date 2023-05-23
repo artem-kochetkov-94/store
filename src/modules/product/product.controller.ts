@@ -27,12 +27,58 @@ export class ProductController extends BaseController implements IProductControl
 		super(loggerService);
 		this.bindRoutes([
 			{
+				/**
+				 * @openapi
+				 * '/product/list':
+				 *  post:
+				 *     tags:
+				 *     - Product
+				 *     summary: Get product list
+				 *     responses:
+				 *      200:
+				 *        description: Success
+				 *        content:
+				 *          application/json:
+				 *            schema:
+				 *              type: array
+				 *              items:
+				 *                $ref: '#/components/schemas/Product'
+				 *      401:
+				 *        description: Вы не авторизованы
+				 */
 				path: '/list',
 				method: 'get',
 				func: this.getProductList,
 				middlewares: [new AuthGuard()],
 			},
 			{
+				/**
+				 * @openapi
+				 * '/product/create':
+				 *  post:
+				 *     tags:
+				 *     - Product
+				 *     summary: Create a product
+				 *     requestBody:
+				 *      required: true
+				 *      content:
+				 *        application/json:
+				 *           schema:
+				 *              $ref: '#/components/schemas/CreateProductDto'
+				 *     responses:
+				 *      200:
+				 *        description: Success
+				 *        content:
+				 *          application/json:
+				 *            schema:
+				 *              $ref: '#/components/schemas/Product'
+				 *      400:
+				 *        description: Bad Request
+				 *      401:
+				 *        description: Вы не авторизованы
+				 *      403:
+				 *        description: Доступ запрещен
+				 */
 				path: '/create',
 				method: 'post',
 				func: this.createProduct,
@@ -43,24 +89,135 @@ export class ProductController extends BaseController implements IProductControl
 				],
 			},
 			{
+				/**
+				 * @openapi
+				 * '/product/delete':
+				 *  post:
+				 *     tags:
+				 *     - Product
+				 *     summary: Delete a product
+				 *     requestBody:
+				 *      required: true
+				 *      content:
+				 *        application/json:
+				 *          schema:
+				 *            type: object
+				 *            required:
+				 *              - id
+				 *            properties:
+				 *              id:
+				 *                type: number
+				 *     responses:
+				 *      200:
+				 *        description: Success
+				 *        content:
+				 *          application/json:
+				 *            schema:
+				 *              $ref: '#/components/schemas/Product'
+				 *      401:
+				 *        description: Вы не авторизованы
+				 *      403:
+				 *        description: Доступ запрещен
+				 */
 				path: '/delete',
 				method: 'delete',
 				func: this.deleteProduct,
 				middlewares: [new AuthGuard(), new RoleGuard(USER_ROLE.ADMIN, this.userService)],
 			},
 			{
+				/**
+				 * @openapi
+				 * '/product/update':
+				 *  post:
+				 *     tags:
+				 *     - Product
+				 *     summary: Update a product
+				 *     requestBody:
+				 *      required: true
+				 *      content:
+				 *        application/json:
+				 *           schema:
+				 *              $ref: '#/components/schemas/UpdateProductDto'
+				 *     responses:
+				 *      200:
+				 *        description: Success
+				 *        content:
+				 *          application/json:
+				 *            schema:
+				 *              $ref: '#/components/schemas/Product'
+				 *      400:
+				 *        description: Bad Request
+				 *      401:
+				 *        description: Вы не авторизованы
+				 *      403:
+				 *        description: Доступ запрещен
+				 */
 				path: '/update',
 				method: 'put',
 				func: this.updateProduct,
 				middlewares: [new AuthGuard(), new RoleGuard(USER_ROLE.ADMIN, this.userService)],
 			},
 			{
+				/**
+				 * @openapi
+				 * '/product/add':
+				 *  post:
+				 *     tags:
+				 *     - Product
+				 *     summary: Add product count
+				 *     requestBody:
+				 *      required: true
+				 *      content:
+				 *        application/json:
+				 *           schema:
+				 *              $ref: '#/components/schemas/AddProductDto'
+				 *     responses:
+				 *      200:
+				 *        description: Success
+				 *        content:
+				 *          application/json:
+				 *            schema:
+				 *              $ref: '#/components/schemas/Product'
+				 *      400:
+				 *        description: Bad Request
+				 *      401:
+				 *        description: Вы не авторизованы
+				 *      403:
+				 *        description: Доступ запрещен
+				 */
 				path: '/add',
 				method: 'put',
 				func: this.addProducts,
 				middlewares: [new AuthGuard(), new RoleGuard(USER_ROLE.STOCK_MANAGER, this.userService)],
 			},
 			{
+				/**
+				 * @openapi
+				 * '/product/find':
+				 *  post:
+				 *     tags:
+				 *     - Product
+				 *     summary: Add products count
+				 *     requestBody:
+				 *      required: true
+				 *      content:
+				 *        application/json:
+				 *           schema:
+				 *             $ref: '#/components/schemas/FindProductDto'
+				 *     responses:
+				 *      200:
+				 *        description: Success
+				 *        content:
+				 *          application/json:
+				 *            schema:
+				 *              type: array
+				 *              items:
+				 *                $ref: '#/components/schemas/Product'
+				 *      400:
+				 *        description: Bad Request
+				 *      401:
+				 *        description: Вы не авторизованы
+				 */
 				path: '/find',
 				method: 'get',
 				func: this.findProductList,
