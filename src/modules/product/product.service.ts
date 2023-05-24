@@ -1,57 +1,61 @@
 import { inject, injectable } from 'inversify';
-import { TYPES } from '../../types';
-import { IProductService } from './product.service.interface';
 import { Product } from '@prisma/client';
-import { CreateProductDto } from './dto/create-product.dto';
-import { IProductRepository } from './product.repository.interface';
+
+import { TYPES } from '../../types';
+
 import { ProductEntity } from './product.entity';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { AddProductDto } from './dto/add-product.dto';
-import { FindProductDto } from './dto/find-product.dto';
+import { IProductRepository, IProductService } from './interfaces';
 
 @injectable()
-export class ProductService implements IProductService {
-	constructor(@inject(TYPES.ProductRepositry) private productRepository: IProductRepository) {}
+export class ProductService implements IProductService.ProductService {
+	constructor(
+		@inject(TYPES.ProductRepositry) private productRepository: IProductRepository.ProductRepository,
+	) {}
 
 	async getProductList(): Promise<Product[]> {
 		return this.productRepository.getProductList();
 	}
 
-	async createProduct({ title, description }: CreateProductDto): Promise<Product | null> {
+	async createProduct({
+		title,
+		description,
+	}: IProductService.CreateProduct): Promise<Product | null> {
 		const newProduct = new ProductEntity(title, description);
 		return this.productRepository.createProduct(newProduct);
 	}
 
-	async deleteProduct(id: Product['id']): Promise<Product | null> {
-		if (!(await this.findProductById(id))) {
+	async deleteProduct(id: number): Promise<Product | null> {
+		const product = await this.findProductById(id);
+		if (!product) {
 			return null;
 		}
 
 		return this.productRepository.deleteProduct(id);
 	}
 
-	async updateProduct(body: UpdateProductDto): Promise<Product | null> {
-		if (!(await this.findProductById(body.id))) {
+	async updateProduct(data: IProductService.UpdateProduct): Promise<Product | null> {
+		const product = await this.findProductById(data.id);
+		if (!product) {
 			return null;
 		}
 
-		return this.productRepository.updateProduct(body);
+		return this.productRepository.updateProduct(data);
 	}
 
-	async addProducts(body: AddProductDto): Promise<Product | null> {
-		const existedProduct = await this.findProductById(body.id);
+	async addProducts(id: number, count: number): Promise<Product | null> {
+		const existedProduct = await this.findProductById(id);
 
 		if (!existedProduct) {
 			return null;
 		}
 
 		return this.productRepository.updateProduct({
-			...body,
-			count: existedProduct.count + body.count,
+			id,
+			count: existedProduct.count + count,
 		});
 	}
 
-	async findProductById(id: Product['id']): Promise<Product | null> {
+	async findProductById(id: number): Promise<Product | null> {
 		const existedProduct = await this.productRepository.findProductById(id);
 
 		if (!existedProduct) {
@@ -61,7 +65,7 @@ export class ProductService implements IProductService {
 		return existedProduct;
 	}
 
-	async findProduct(body: FindProductDto): Promise<Product[]> {
-		return this.productRepository.findProductList(body);
+	async findProduct(data: IProductService.FindProduct): Promise<Product[]> {
+		return this.productRepository.findProductList(data);
 	}
 }

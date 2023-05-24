@@ -1,18 +1,18 @@
 import { User } from '.prisma/client';
 import { inject, injectable } from 'inversify';
-import { PrismaService } from '../../database/prisma.service';
+
 import { TYPES } from '../../types';
-import { UserEntity } from './user.entity';
-import { IUsersRepository } from './users.repository.interface';
-import { Role } from '@prisma/client';
 import { USER_ROLE } from '../../../types/user-role';
-import { SetUserPasswordDto } from './dto/set-user-password.dto';
+
+import { PrismaService } from '../../database/prisma.service';
+
+import { IUsersRepository } from './interfaces';
 
 @injectable()
-export class UsersRepository implements IUsersRepository {
+export class UsersRepository implements IUsersRepository.UsersRepository {
 	constructor(@inject(TYPES.PrismaService) private prismaService: PrismaService) {}
 
-	async findByEmail(email: User['email']): Promise<User | null> {
+	async findByEmail(email: string): Promise<User | null> {
 		return this.prismaService.client.user.findFirst({
 			where: {
 				email,
@@ -20,7 +20,7 @@ export class UsersRepository implements IUsersRepository {
 		});
 	}
 
-	async findById(id: User['id']): Promise<User | null> {
+	async findById(id: number): Promise<User | null> {
 		return this.prismaService.client.user.findFirst({
 			where: {
 				id,
@@ -28,7 +28,7 @@ export class UsersRepository implements IUsersRepository {
 		});
 	}
 
-	async checkRole(email: User['email'], roleName: Role['name']): Promise<User | null> {
+	async checkRole(email: string, roleName: USER_ROLE): Promise<User | null> {
 		return this.prismaService.client.user.findFirst({
 			where: {
 				email,
@@ -43,7 +43,12 @@ export class UsersRepository implements IUsersRepository {
 		});
 	}
 
-	async createUser({ email, password, name, roleName }: UserEntity): Promise<User> {
+	async createUser({
+		email,
+		password,
+		name,
+		roleName,
+	}: IUsersRepository.CreateUser): Promise<User> {
 		return this.prismaService.client.user.create({
 			data: {
 				email,
@@ -64,7 +69,7 @@ export class UsersRepository implements IUsersRepository {
 		});
 	}
 
-	async deleteUserPassword(id: User['id']): Promise<User | null> {
+	async deleteUserPassword(id: number): Promise<User | null> {
 		return this.prismaService.client.user.update({
 			where: {
 				id,
@@ -75,7 +80,7 @@ export class UsersRepository implements IUsersRepository {
 		});
 	}
 
-	async setUserPassword({ id, password }: SetUserPasswordDto): Promise<User | null> {
+	async setUserPassword(id: number, password: string): Promise<User | null> {
 		return this.prismaService.client.user.update({
 			where: {
 				id,

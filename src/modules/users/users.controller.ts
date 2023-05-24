@@ -1,28 +1,25 @@
 import { NextFunction, Request, Response } from 'express';
 import { injectable, inject } from 'inversify';
-import { BaseController } from '../../common/base.controller';
+import { User } from '@prisma/client';
+import { sign } from 'jsonwebtoken';
+
+import { TYPES } from '../../types';
+import { USER_ROLE } from '../../../types/user-role';
+
 import { HTTPError } from '../../errors/http-error.class';
 import { ILogger } from '../../logger/logger.interface';
-import { TYPES } from '../../types';
-import { IUserController } from './users.controller.interface';
-import { UserLoginDto } from './dto/user-login.dto';
-import { UserRegisterDto } from './dto/user-register.dto';
-import { ValidateMiddleware } from '../../common/validate.middleware';
-import { sign } from 'jsonwebtoken';
 import { IConfigService } from '../../config/config.service.interface';
-import { IUserService } from './users.service.interface';
-import { AuthGuard } from '../../common/auth.guard';
-import { RoleGuard } from '../../common/role.guard';
-import { UserCreateDto } from './dto/user-create.dto';
-import { USER_ROLE } from '../../../types/user-role';
-import { SetUserPasswordDto } from './dto/set-user-password.dto';
-import { User } from '@prisma/client';
+
+import { BaseController, ValidateMiddleware, AuthGuard, RoleGuard } from '../../common';
+
+import { UserRegisterDto, UserLoginDto, UserCreateDto, SetUserPasswordDto } from './dto';
+import { IUserController, IUserService } from './interfaces';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
 	constructor(
 		@inject(TYPES.ILogger) private loggerService: ILogger,
-		@inject(TYPES.UserService) private userService: IUserService,
+		@inject(TYPES.UserService) private userService: IUserService.UserService,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 	) {
 		super(loggerService);
@@ -142,11 +139,11 @@ export class UserController extends BaseController implements IUserController {
 	}
 
 	async setUserPassword(
-		{ body }: Request<{}, {}, SetUserPasswordDto>,
+		{ body: { id, password } }: Request<{}, {}, SetUserPasswordDto>,
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const result = await this.userService.setUserPassword(body);
+		const result = await this.userService.setUserPassword(id, password);
 
 		if (!result) {
 			return next(new HTTPError(400, 'Bad Request'));

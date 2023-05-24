@@ -1,21 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
-import { BaseController } from '../../common/base.controller';
-import { IProductController } from './product.controller.interface';
-import { ILogger } from '../../logger/logger.interface';
-import { TYPES } from '../../types';
 import { inject, injectable } from 'inversify';
-import { ValidateMiddleware } from '../../common/validate.middleware';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ProductService } from './product.service';
-import { Product } from '@prisma/client';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { AddProductDto } from './dto/add-product.dto';
-import { AuthGuard } from '../../common/auth.guard';
-import { UserService } from '../users/users.service';
-import { RoleGuard } from '../../common/role.guard';
+
+import { TYPES } from '../../types';
 import { USER_ROLE } from '../../../types/user-role';
+
+import { ILogger } from '../../logger/logger.interface';
+import { ValidateMiddleware, BaseController, AuthGuard, RoleGuard } from '../../common/';
 import { HTTPError } from '../../errors/http-error.class';
-import { FindProductDto } from './dto/find-product.dto';
+
+import { UserService } from '../users/users.service';
+
+import { ProductService } from './product.service';
+import { IProductController } from './interfaces';
+import { CreateProductDto, UpdateProductDto, AddProductDto, FindProductDto } from './dto';
 
 @injectable()
 export class ProductController extends BaseController implements IProductController {
@@ -245,10 +242,7 @@ export class ProductController extends BaseController implements IProductControl
 		this.ok(res, result);
 	}
 
-	async deleteProduct(
-		{ body }: Request<{}, {}, Pick<Product, 'id'>>,
-		res: Response,
-	): Promise<void> {
+	async deleteProduct({ body }: Request<{}, {}, { id: number }>, res: Response): Promise<void> {
 		await this.productService.deleteProduct(body.id);
 		this.ok(res, 'Продукт удален');
 	}
@@ -268,11 +262,11 @@ export class ProductController extends BaseController implements IProductControl
 	}
 
 	async addProducts(
-		{ body }: Request<{}, {}, AddProductDto>,
+		{ body: { id, count } }: Request<{}, {}, AddProductDto>,
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const result = await this.productService.addProducts(body);
+		const result = await this.productService.addProducts(id, count);
 
 		if (!result) {
 			return next(new HTTPError(400, 'Bad Request	'));

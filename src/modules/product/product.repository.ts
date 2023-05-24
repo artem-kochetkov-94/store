@@ -1,32 +1,34 @@
 import { inject, injectable } from 'inversify';
+import { Product } from '@prisma/client';
+
 import { PrismaService } from '../../database/prisma.service';
 import { TYPES } from '../../types';
-import { ProductEntity } from './product.entity';
-import { IProductRepository } from './product.repository.interface';
-import { Product } from '@prisma/client';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { AddProductDto } from './dto/add-product.dto';
-import { FindProductDto } from './dto/find-product.dto';
+
+import { IProductRepository } from './interfaces';
 
 @injectable()
-export class ProductRepository implements IProductRepository {
+export class ProductRepository implements IProductRepository.ProductRepository {
 	constructor(@inject(TYPES.PrismaService) private prismaService: PrismaService) {}
 
 	async getProductList(): Promise<Product[]> {
 		return this.prismaService.client.product.findMany();
 	}
 
-	async createProduct({ title, description, count }: ProductEntity): Promise<Product> {
+	async createProduct({
+		title,
+		description,
+		count,
+	}: IProductRepository.CreateProduct): Promise<Product> {
 		return this.prismaService.client.product.create({
 			data: {
 				title,
-				count,
 				description,
+				count,
 			},
 		});
 	}
 
-	async deleteProduct(id: Product['id']): Promise<Product> {
+	async deleteProduct(id: number): Promise<Product> {
 		return this.prismaService.client.product.delete({
 			where: {
 				id,
@@ -34,7 +36,7 @@ export class ProductRepository implements IProductRepository {
 		});
 	}
 
-	async updateProduct({ id, ...data }: UpdateProductDto | AddProductDto): Promise<Product> {
+	async updateProduct({ id, ...data }: IProductRepository.UpdateProduct): Promise<Product> {
 		return this.prismaService.client.product.update({
 			where: {
 				id,
@@ -43,7 +45,7 @@ export class ProductRepository implements IProductRepository {
 		});
 	}
 
-	async findProductById(id: Product['id']): Promise<Product | null> {
+	async findProductById(id: number): Promise<Product | null> {
 		return this.prismaService.client.product.findFirst({
 			where: {
 				id,
@@ -51,7 +53,11 @@ export class ProductRepository implements IProductRepository {
 		});
 	}
 
-	async findProductList({ title, description, count }: FindProductDto): Promise<Product[]> {
+	async findProductList({
+		title,
+		description,
+		count,
+	}: IProductRepository.FindProduct): Promise<Product[]> {
 		const where: Record<string, any> = {};
 
 		if (count) {

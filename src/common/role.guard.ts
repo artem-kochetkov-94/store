@@ -1,10 +1,10 @@
-import { Role } from '@prisma/client';
-import { IUserService } from '../modules/users/users.service.interface';
 import { IMiddleware } from './middleware.interface';
 import { NextFunction, Request, Response } from 'express';
+import { IUserService } from '../modules/users/interfaces';
+import { USER_ROLE } from '../../types/user-role';
 
 export class RoleGuard implements IMiddleware {
-	constructor(private roleName: Role['name'], private userService: IUserService) {}
+	constructor(private roleName: USER_ROLE, private userService: IUserService.UserService) {}
 
 	async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const haveAccess = await this.userService.checkRole(req.user, this.roleName);

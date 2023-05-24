@@ -3,7 +3,7 @@ import { IsNumber } from 'class-validator';
 
 export class AddProductDto {
 	@IsNumber()
-	id: Product['id'];
+	id: number;
 
 	@IsNumber()
 	count: number;

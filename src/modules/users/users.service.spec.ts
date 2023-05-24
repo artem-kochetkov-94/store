@@ -1,20 +1,20 @@
 import { User } from '@prisma/client';
 import { Container } from 'inversify';
 import 'reflect-metadata';
+
 import { IConfigService } from '../../config/config.service.interface';
 import { TYPES } from '../../types';
-import { UserEntity } from './user.entity';
-import { IUsersRepository } from './users.repository.interface';
-import { UserService } from './users.service';
-import { IUserService } from './users.service.interface';
 import { USER_ROLE } from '../../../types/user-role';
-import { SetUserPasswordDto } from './dto/set-user-password.dto';
+
+import { UserEntity } from './user.entity';
+import { UserService } from './users.service';
+import { IUserService, IUsersRepository } from './interfaces';
 
 const ConfigServiceMock: IConfigService = {
 	get: jest.fn(),
 };
 
-const UsersRepositoryMock: IUsersRepository = {
+const UsersRepositoryMock: IUsersRepository.UsersRepository = {
 	findByEmail: jest.fn(),
 	createUser: jest.fn(),
 	findById: jest.fn(),
@@ -25,17 +25,19 @@ const UsersRepositoryMock: IUsersRepository = {
 
 const container = new Container();
 let configService: IConfigService;
-let usersRepository: IUsersRepository;
-let usersService: IUserService;
+let usersRepository: IUsersRepository.UsersRepository;
+let usersService: IUserService.UserService;
 
 beforeAll(() => {
-	container.bind<IUserService>(TYPES.UserService).to(UserService);
+	container.bind<IUserService.UserService>(TYPES.UserService).to(UserService);
 	container.bind<IConfigService>(TYPES.ConfigService).toConstantValue(ConfigServiceMock);
-	container.bind<IUsersRepository>(TYPES.UsersRepository).toConstantValue(UsersRepositoryMock);
+	container
+		.bind<IUsersRepository.UsersRepository>(TYPES.UsersRepository)
+		.toConstantValue(UsersRepositoryMock);
 
 	configService = container.get<IConfigService>(TYPES.ConfigService);
-	usersRepository = container.get<IUsersRepository>(TYPES.UsersRepository);
-	usersService = container.get<IUserService>(TYPES.UserService);
+	usersRepository = container.get<IUsersRepository.UsersRepository>(TYPES.UsersRepository);
+	usersService = container.get<IUserService.UserService>(TYPES.UserService);
 });
 
 let createdUser: User | null;
@@ -126,17 +128,12 @@ describe('User Service', () => {
 	it('setUserPassword', async () => {
 		configService.get = jest.fn().mockReturnValueOnce('1');
 		usersRepository.findById = jest.fn().mockReturnValueOnce(createdUser);
-		usersRepository.setUserPassword = jest
-			.fn()
-			.mockImplementationOnce((body: SetUserPasswordDto) => ({
-				...createdUser,
-				password: 'new password',
-			}));
-
-		createdUser = await usersService.setUserPassword({
-			id: 2,
+		usersRepository.setUserPassword = jest.fn().mockImplementationOnce(() => ({
+			...createdUser,
 			password: 'new password',
-		});
+		}));
+
+		createdUser = await usersService.setUserPassword(2, 'new password');
 
 		usersRepository.findByEmail = jest.fn().mockReturnValueOnce(createdUser);
 
