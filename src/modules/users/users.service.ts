@@ -11,10 +11,14 @@ import { IUserService, IUsersRepository } from './interfaces';
 
 @injectable()
 export class UserService implements IUserService.UserService {
+	private salt: number;
+
 	constructor(
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.UsersRepository) private usersRepository: IUsersRepository.UsersRepository,
-	) {}
+	) {
+		this.salt = Number(this.configService.get('SALT'));
+	}
 
 	async createAdmin(body: IUserService.Register): Promise<User | null> {
 		return this.createUser({ ...body, roleName: USER_ROLE.ADMIN });
@@ -27,9 +31,8 @@ export class UserService implements IUserService.UserService {
 		roleName,
 	}: IUserService.UserCreate): Promise<User | null> {
 		const newUser = new UserEntity(email, name);
-		const salt = this.configService.get('SALT');
 
-		await newUser.setPassword(password, Number(salt));
+		await newUser.setPassword(password, this.salt);
 		newUser.setRoleName(roleName);
 
 		const existedUser = await this.usersRepository.findByEmail(email);
@@ -56,11 +59,7 @@ export class UserService implements IUserService.UserService {
 	async checkRole(email: string, roleName: USER_ROLE): Promise<boolean> {
 		const existedUser = await this.usersRepository.checkRole(email, roleName);
 
-		if (!existedUser) {
-			return false;
-		}
-
-		return true;
+		return !!existedUser;
 	}
 
 	async getUserInfo(email: string): Promise<User | null> {
@@ -74,12 +73,11 @@ export class UserService implements IUserService.UserService {
 			return null;
 		}
 
-		const newUser = new UserEntity(existedUser.email, existedUser.name);
-		const salt = this.configService.get('SALT');
+		const user = new UserEntity(existedUser.email, existedUser.name);
 
-		await newUser.setPassword(password, Number(salt));
+		await user.setPassword(password, this.salt);
 
-		return this.usersRepository.setUserPassword(id, newUser.password);
+		return this.usersRepository.setUserPassword(id, user.password);
 	}
 
 	async deleteUserPassword(id: number): Promise<User | null> {
