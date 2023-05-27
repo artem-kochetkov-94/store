@@ -27,5 +27,6 @@ export namespace IProductRepository {
 		updateProduct: (body: UpdateProduct) => Promise<Product>;
 		findProductById: (id: number) => Promise<Product | null>;
 		findProductList: (body: FindProduct) => Promise<Product[]>;
+		findProductListByIds(ids: number[]): Promise<Product[]>;
 	}
 }

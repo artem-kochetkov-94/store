@@ -1,5 +1,5 @@
 import { Scenes } from 'telegraf';
-import { MyContext, NarrowedContext, ScenesNames } from '../types';
+import { MyContext, TextNarrowedContext, ScenesNames } from '../types';
 import { Scene } from './abstract.scene.class';
 import { CityActions } from './types/city.scene.types';
 
@@ -25,7 +25,7 @@ export class CityScene extends Scene {
 		ctx.scene.enter(ScenesNames.Main);
 	}
 
-	private handleText(ctx: NarrowedContext): void {
+	private handleText(ctx: TextNarrowedContext): void {
 		const city = ctx.message.text;
 
 		if (!cities.includes(city)) {

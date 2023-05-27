@@ -37,7 +37,7 @@ export type CallbackQueryContext = NarrowedContext<
 	Update.CallbackQueryUpdate<CallbackQuery>
 >;
 
-export type NarrowedContext = NarrowedContext<
+export type TextNarrowedContext = NarrowedContext<
 	MyContext,
 	{
 		message: Update.New & Update.NonChannel & Message.TextMessage;

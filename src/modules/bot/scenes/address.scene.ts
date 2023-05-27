@@ -1,5 +1,5 @@
 import { Scenes } from 'telegraf';
-import { MyContext, NarrowedContext, ScenesNames } from '../types';
+import { MyContext, TextNarrowedContext, ScenesNames } from '../types';
 import { Scene } from './abstract.scene.class';
 import { AddressActions } from './types';
 
@@ -23,7 +23,7 @@ export class AddressScene extends Scene {
 		ctx.scene.enter(ScenesNames.City);
 	}
 
-	private handleText(ctx: NarrowedContext): void {
+	private handleText(ctx: TextNarrowedContext): void {
 		ctx.session.address = ctx.message.text;
 		ctx.scene.enter(ScenesNames.Main);
 	}

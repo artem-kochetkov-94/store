@@ -78,4 +78,12 @@ export class ProductRepository implements IProductRepository.ProductRepository {
 			},
 		});
 	}
+
+	async findProductListByIds(ids: number[]): Promise<Product[]> {
+		return this.prismaService.client.product.findMany({
+			where: {
+				id: { in: ids },
+			},
+		});
+	}
 }

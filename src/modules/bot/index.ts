@@ -39,7 +39,7 @@ export class Bot implements IBot {
 			new AddressScene(),
 			new ProductListScene(this.productRepository),
 			new ProductScene(this.productRepository),
-			new OrderScene(),
+			new OrderScene(this.productRepository),
 		];
 		scenes.map((scene) => scene.init());
 

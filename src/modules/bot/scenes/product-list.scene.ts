@@ -13,7 +13,6 @@ export class ProductListScene extends Scene {
 	constructor(private productRepository: IProductRepository.ProductRepository) {
 		super();
 		this._scene = new Scenes.BaseScene<MyContext>(ScenesNames.ProductList);
-		this.productRepository = productRepository;
 	}
 
 	get scene(): Scenes.BaseScene<MyContext> {
@@ -22,6 +21,10 @@ export class ProductListScene extends Scene {
 
 	private handleBack(ctx: MyContext): void {
 		ctx.scene.enter(ScenesNames.Main);
+	}
+
+	private handleRedirectToOrder(ctx: MyContext): void {
+		ctx.scene.enter(ScenesNames.Order);
 	}
 
 	private async handleEnter(ctx: MyContext): Promise<void> {
@@ -42,17 +45,20 @@ export class ProductListScene extends Scene {
 
 	private getNavigationTemplate(ctx: MyContext): InlineKeyboardButton[] {
 		const backButtonTemplate = Markup.button.callback('Назад к меню', ProductListActions.Back);
-		const goToOrderTemplate = Markup.button.callback('В корзину', ProductListActions.GoToOrder);
+		const RedirectToOrderTemplate = Markup.button.callback(
+			'В корзину',
+			ProductListActions.RedirectToOrder,
+		);
 
 		if (ctx.session.order && Object.keys(ctx.session.order).length > 0) {
-			return [backButtonTemplate, goToOrderTemplate];
+			return [backButtonTemplate, RedirectToOrderTemplate];
 		}
 
 		return [backButtonTemplate];
 	}
 
 	private getProductListTemplate(ctx: MyContext, products: Product[]): InlineKeyboardButton[][] {
-		const template = [
+		return [
 			...products.map((product) => {
 				const productInOrder = (ctx.session.order && ctx.session.order[product.id]) || null;
 				return [
@@ -65,8 +71,6 @@ export class ProductListScene extends Scene {
 				];
 			}),
 		];
-
-		return template;
 	}
 
 	private handleDetailProductClick(ctx: CallbackQueryContext): void {
@@ -81,5 +85,6 @@ export class ProductListScene extends Scene {
 		this._scene.enter(this.handleEnter.bind(this));
 		this._scene.action(/^productDetailAction-(\d+)$/, this.handleDetailProductClick.bind(this));
 		this._scene.action(ProductListActions.Back, this.handleBack.bind(this));
+		this._scene.action(ProductListActions.RedirectToOrder, this.handleRedirectToOrder.bind(this));
 	}
 }
