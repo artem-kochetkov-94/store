@@ -1,6 +1,7 @@
 import { Scenes } from 'telegraf';
-import { MyContext, ScenesNames } from '../types';
+import { MyContext, NarrowedContext, ScenesNames } from '../types';
 import { Scene } from './abstract.scene.class';
+import { AddressActions } from './types';
 
 export class AddressScene extends Scene {
 	_scene: Scenes.BaseScene<MyContext>;
@@ -14,16 +15,22 @@ export class AddressScene extends Scene {
 		return this._scene;
 	}
 
+	private handleStart(ctx: MyContext): void {
+		ctx.reply('Укажите адрес доставки');
+	}
+
+	private handleBack(ctx: MyContext): void {
+		ctx.scene.enter(ScenesNames.City);
+	}
+
+	private handleText(ctx: NarrowedContext): void {
+		ctx.session.address = ctx.message.text;
+		ctx.scene.enter(ScenesNames.Main);
+	}
+
 	public init(): void {
-		this._scene.command('back', (ctx) => ctx.scene.enter(ScenesNames.City));
-
-		this._scene.enter((ctx) => {
-			ctx.reply('Укажите адрес доставки');
-		});
-
-		this._scene.on('text', (ctx) => {
-			ctx.session.address = ctx.message.text;
-			ctx.scene.enter(ScenesNames.Main);
-		});
+		this._scene.command(AddressActions.Back, this.handleBack.bind(this));
+		this._scene.enter(this.handleStart.bind(this));
+		this._scene.on('text', this.handleText.bind(this));
 	}
 }

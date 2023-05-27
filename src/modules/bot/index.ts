@@ -10,6 +10,7 @@ import { TYPES } from '../../types';
 import { IProductRepository } from '../product/interfaces';
 import { ProductListScene } from './scenes/product-list.scene';
 import { ProductScene } from './scenes/product.scene';
+import { OrderScene } from './scenes/order.scene';
 
 export interface IBot {
 	init(): void;
@@ -38,6 +39,7 @@ export class Bot implements IBot {
 			new AddressScene(),
 			new ProductListScene(this.productRepository),
 			new ProductScene(this.productRepository),
+			new OrderScene(),
 		];
 		scenes.map((scene) => scene.init());
 
