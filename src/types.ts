@@ -12,4 +12,6 @@ export const TYPES = {
 	ProductController: Symbol.for('ProductController'),
 	ProductService: Symbol.for('ProductService'),
 	ProductRepositry: Symbol.for('ProductRepository'),
+
+	Bot: Symbol.for('Bot'),
 };

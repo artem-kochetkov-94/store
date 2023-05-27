@@ -1,9 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import { UserCreateDto } from '../src/modules/users/dto/user-create.dto';
+
 import { USER_ROLE } from '../types/user-role';
 import { UserEntity } from '../src/modules/users/user.entity';
 import { ConfigService } from '../src/config/config.service';
 import { LoggerService } from '../src/logger/logger.service';
+
+import { UserCreateDto } from '../src/modules/users/dto';
+import { IProductRepository } from '../src/modules/product/interfaces';
 import 'reflect-metadata';
 
 const prisma = new PrismaClient();
@@ -23,7 +26,7 @@ async function getUser(): Promise<UserCreateDto> {
 	};
 }
 
-export const roles = [
+const roles = [
 	{
 		id: 1,
 		name: 'USER',
@@ -38,9 +41,33 @@ export const roles = [
 	},
 ];
 
+const products: IProductRepository.CreateProduct[] = [
+	{
+		title: 'title 1',
+		description: 'description 1',
+		count: 1,
+	},
+	{
+		title: 'title 2',
+		description: 'description 2',
+		count: 2,
+	},
+	{
+		title: 'title 3',
+		description: 'description 3',
+		count: 3,
+	},
+];
+
 async function main(): Promise<void> {
 	for (const data of roles) {
 		await prisma.role.create({
+			data,
+		});
+	}
+
+	for (const data of products) {
+		await prisma.product.create({
 			data,
 		});
 	}

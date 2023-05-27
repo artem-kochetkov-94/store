@@ -20,6 +20,7 @@ import {
 	IProductService,
 } from './modules/product/interfaces';
 import { IUserController, IUserService, IUsersRepository } from './modules/users/interfaces';
+import { Bot, IBot } from './modules/bot';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -42,14 +43,18 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 		.to(UsersRepository)
 		.inSingletonScope();
 
+	bind<IBot>(TYPES.Bot).to(Bot);
+
 	bind<App>(TYPES.Application).to(App);
 });
 
 async function bootstrap(): Promise<IBootstrapReturn> {
 	const appContainer = new Container();
 	appContainer.load(appBindings);
+
 	const app = appContainer.get<App>(TYPES.Application);
 	await app.init();
+
 	return { appContainer, app };
 }
 

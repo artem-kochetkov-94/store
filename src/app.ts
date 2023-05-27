@@ -11,6 +11,7 @@ import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
 import { ProductController } from './modules/product/product.controller';
 import { swaggerDocs } from './swagger';
+import { Bot, IBot } from './modules/bot';
 
 @injectable()
 export class App {
@@ -25,6 +26,7 @@ export class App {
 		@inject(TYPES.ExeptionFilter) private exeptionFilter: IExeptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
+		@inject(TYPES.Bot) private bot: IBot,
 	) {
 		this.app = express();
 		this.port = 8000;
@@ -53,6 +55,7 @@ export class App {
 		this.server = this.app.listen(this.port);
 		this.logger.log(`Сервер запущен на http://localhost:${this.port}`);
 		swaggerDocs(this.app, this.port);
+		this.bot.init();
 	}
 
 	public close(): void {
