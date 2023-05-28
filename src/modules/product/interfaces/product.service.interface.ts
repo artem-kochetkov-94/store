@@ -4,6 +4,7 @@ export namespace IProductService {
 	export interface CreateProduct {
 		title: string;
 		description: string;
+		price: number;
 	}
 
 	export interface UpdateProduct {
@@ -26,5 +27,6 @@ export namespace IProductService {
 		addProducts: (id: number, count: number) => Promise<Product | null>;
 		findProductById: (id: number) => Promise<Product | null>;
 		findProduct: (data: FindProduct) => Promise<Product[]>;
+		findProductListByIds(ids: number[]): Promise<Product[]>;
 	}
 }

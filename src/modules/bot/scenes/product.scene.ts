@@ -1,7 +1,7 @@
 import { Markup, Scenes } from 'telegraf';
 import { MyContext, ScenesNames } from '../types';
 import { Scene } from './abstract.scene.class';
-import { IProductRepository } from '../../product/interfaces';
+import { IProductService } from '../../product/interfaces';
 import { ProductActions, ProductState, isProductState } from './types';
 import { InlineKeyboardMarkup } from 'telegraf/typings/core/types/typegram';
 
@@ -9,7 +9,7 @@ export class ProductScene extends Scene {
 	_scene: Scenes.BaseScene<MyContext>;
 	private state: ProductState;
 
-	constructor(private productRepository: IProductRepository.ProductRepository) {
+	constructor(private productService: IProductService.ProductService) {
 		super();
 		this._scene = new Scenes.BaseScene<MyContext>(ScenesNames.Product);
 	}
@@ -22,7 +22,7 @@ export class ProductScene extends Scene {
 		ctx.scene.enter(ScenesNames.ProductList);
 	}
 
-	private getMarkupTemplate(ctx: MyContext): Markup.Markup<InlineKeyboardMarkup> {
+	private getNavigationTemplate(ctx: MyContext): Markup.Markup<InlineKeyboardMarkup> {
 		const template = [
 			[Markup.button.callback('Назад к списку', ProductActions.Back)],
 			[Markup.button.callback('Добавить в корзину', ProductActions.AddToOrder)],
@@ -42,13 +42,15 @@ export class ProductScene extends Scene {
 		}
 
 		this.state = ctx.scene.state;
+		const product = await this.productService.findProductById(this.state.id);
 
-		const product = await this.productRepository.findProductById(this.state.id);
+		const multilineText = `
+Title: ${product?.title};
+Description: ${product?.description};
+Price: ${product?.price};
+		`;
 
-		ctx.reply(
-			`Title: ${product?.title}; Description: ${product?.description}; Count: ${product?.count}`,
-			this.getMarkupTemplate(ctx),
-		);
+		ctx.replyWithHTML(`<pre>${multilineText}</pre>`, this.getNavigationTemplate(ctx));
 	}
 
 	private handleError(ctx: MyContext): void {
@@ -68,19 +70,16 @@ export class ProductScene extends Scene {
 			},
 		};
 
-		await ctx.reply('Товар добавлен в корзину');
 		await ctx.scene.enter(ScenesNames.ProductList);
 	}
 
 	private async handleRemove(ctx: MyContext): Promise<void> {
 		delete ctx.session.order[this.state.id];
-
-		await ctx.reply('Товар удален из корзины');
 		await ctx.scene.enter(ScenesNames.ProductList);
 	}
 
 	public init(): void {
-		this._scene.command('back', this.handleBack.bind(this));
+		this._scene.command(ProductActions.Back, this.handleBack.bind(this));
 		this._scene.enter(this.handleEnter.bind(this));
 		this._scene.action(ProductActions.Back, this.handleBack.bind(this));
 		this._scene.action(ProductActions.AddToOrder, this.handleAdd.bind(this));

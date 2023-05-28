@@ -1,3 +1,3 @@
 export enum AddressActions {
-	Back = 'Back',
+	Back = 'back',
 }

@@ -11,17 +11,17 @@ datasource db {
 }
 
 model User {
-    id          Int           @id @default(autoincrement())
-    email       String
-    password    String
-    name        String
-    roles       UserOnRoles[]
+    id       Int           @id @default(autoincrement())
+    email    String
+    password String
+    name     String
+    roles    UserOnRoles[]
 }
 
 model Role {
-    id          Int           @id @default(autoincrement())
-    name        String
-    users       UserOnRoles[]
+    id    Int           @id @default(autoincrement())
+    name  String
+    users UserOnRoles[]
 }
 
 model UserOnRoles {
@@ -37,4 +37,5 @@ model Product {
     title       String
     description String
     count       Int
+    price       Int
 }

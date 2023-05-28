@@ -7,10 +7,12 @@ import { CityScene } from './scenes/city.scene';
 import { AddressScene } from './scenes/address.scene';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../../types';
-import { IProductRepository } from '../product/interfaces';
+import { IProductService } from '../product/interfaces';
 import { ProductListScene } from './scenes/product-list.scene';
 import { ProductScene } from './scenes/product.scene';
 import { OrderScene } from './scenes/order.scene';
+import { CheckoutScene } from './scenes/checkout.scene';
+import { PaymentScene } from './scenes/payment.scene';
 
 export interface IBot {
 	init(): void;
@@ -23,7 +25,7 @@ export class Bot implements IBot {
 
 	constructor(
 		@inject(TYPES.ConfigService) private configService: IConfigService,
-		@inject(TYPES.ProductRepositry) private productRepository: IProductRepository.ProductRepository,
+		@inject(TYPES.ProductService) private productService: IProductService.ProductService,
 	) {
 		this.bot = new Telegraf<MyContext>(this.configService.get('TELEGRAM_TOKEN'));
 		this.bot.use(new LocalSession({ database: 'session.json' }).middleware());
@@ -37,9 +39,11 @@ export class Bot implements IBot {
 			new MainScene(),
 			new CityScene(),
 			new AddressScene(),
-			new ProductListScene(this.productRepository),
-			new ProductScene(this.productRepository),
-			new OrderScene(this.productRepository),
+			new ProductListScene(this.productService),
+			new ProductScene(this.productService),
+			new OrderScene(this.productService),
+			new CheckoutScene(this.productService),
+			new PaymentScene(this.productService),
 		];
 		scenes.map((scene) => scene.init());
 

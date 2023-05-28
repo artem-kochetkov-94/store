@@ -19,8 +19,9 @@ export class ProductService implements IProductService.ProductService {
 	async createProduct({
 		title,
 		description,
+		price,
 	}: IProductService.CreateProduct): Promise<Product | null> {
-		const newProduct = new ProductEntity(title, description);
+		const newProduct = new ProductEntity(title, description, price);
 		return this.productRepository.createProduct(newProduct);
 	}
 
@@ -67,5 +68,9 @@ export class ProductService implements IProductService.ProductService {
 
 	async findProduct(data: IProductService.FindProduct): Promise<Product[]> {
 		return this.productRepository.findProductList(data);
+	}
+
+	async findProductListByIds(ids: number[]): Promise<Product[]> {
+		return this.productRepository.findProductListByIds(ids);
 	}
 }

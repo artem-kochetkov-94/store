@@ -18,12 +18,14 @@ export class ProductRepository implements IProductRepository.ProductRepository {
 		title,
 		description,
 		count,
+		price,
 	}: IProductRepository.CreateProduct): Promise<Product> {
 		return this.prismaService.client.product.create({
 			data: {
 				title,
 				description,
 				count,
+				price,
 			},
 		});
 	}

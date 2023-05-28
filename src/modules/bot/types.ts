@@ -8,6 +8,8 @@ export enum ScenesNames {
 	ProductList = 'ProductList',
 	Product = 'Product',
 	Order = 'Order',
+	Checkout = 'Checkout',
+	Payment = 'Payment',
 }
 
 export interface MySessionScene extends Scenes.SceneSessionData {

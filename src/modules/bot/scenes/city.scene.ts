@@ -29,7 +29,9 @@ export class CityScene extends Scene {
 		const city = ctx.message.text;
 
 		if (!cities.includes(city)) {
-			ctx.reply('В данный город доставка не осуществляется');
+			ctx.reply(
+				`В данный город доставка не осуществляется. Список доступных городов: ${cities.toString()}`,
+			);
 		} else {
 			// Сохранение адреса доставки в контексте пользователя
 			ctx.session.city = city;

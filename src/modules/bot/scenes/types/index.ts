@@ -4,3 +4,5 @@ export * from './address.scene.types';
 export * from './city.scene.types';
 export * from './main.scene.types';
 export * from './order.scene.types';
+export * from './checkout.scene.types';
+export * from './payment.scene.types';

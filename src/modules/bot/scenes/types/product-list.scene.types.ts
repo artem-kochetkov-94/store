@@ -1,4 +1,4 @@
 export enum ProductListActions {
-	Back = 'Back',
+	Back = 'back',
 	RedirectToOrder = 'RedirectToOrder',
 }

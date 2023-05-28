@@ -1,3 +1,5 @@
 export enum OrderActions {
-	Back = 'Back',
+	Back = 'back',
+	RedirectToCheckout = 'RedirectToCheckout',
+	RedirectToProductList = 'RedirectToProductList',
 }

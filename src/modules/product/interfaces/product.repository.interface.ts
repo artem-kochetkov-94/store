@@ -5,6 +5,7 @@ export namespace IProductRepository {
 		title: string;
 		description: string;
 		count: number;
+		price: number;
 	}
 
 	export interface UpdateProduct {
@@ -12,6 +13,7 @@ export namespace IProductRepository {
 		title?: string;
 		description?: string;
 		count?: number;
+		price?: number;
 	}
 
 	export interface FindProduct {

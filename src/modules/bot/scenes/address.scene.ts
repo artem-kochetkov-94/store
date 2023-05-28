@@ -15,12 +15,12 @@ export class AddressScene extends Scene {
 		return this._scene;
 	}
 
-	private handleStart(ctx: MyContext): void {
-		ctx.reply('Укажите адрес доставки');
-	}
-
 	private handleBack(ctx: MyContext): void {
 		ctx.scene.enter(ScenesNames.City);
+	}
+
+	private handleStart(ctx: MyContext): void {
+		ctx.reply('Укажите адрес доставки');
 	}
 
 	private handleText(ctx: TextNarrowedContext): void {

@@ -1,5 +1,5 @@
 export enum ProductActions {
-	Back = 'Back',
+	Back = 'back',
 	AddToOrder = 'AddToOrder',
 	RemoveFromOrder = 'RemoveFromOrder',
 }

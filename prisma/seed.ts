@@ -46,16 +46,19 @@ const products: IProductRepository.CreateProduct[] = [
 		title: 'title 1',
 		description: 'description 1',
 		count: 1,
+		price: 100,
 	},
 	{
 		title: 'title 2',
 		description: 'description 2',
 		count: 2,
+		price: 200,
 	},
 	{
 		title: 'title 3',
 		description: 'description 3',
 		count: 3,
+		price: 300,
 	},
 ];
 
