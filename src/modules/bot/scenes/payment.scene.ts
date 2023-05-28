@@ -43,6 +43,7 @@ export class PaymentScene extends Scene {
 	}
 
 	private handlePay(ctx: MyContext): void {
+		// TODO: уменшить count в базе
 		ctx.reply('Спасибо за покупку!');
 	}
 
